@@ -1,0 +1,21 @@
+{
+  "name": "IndexedDBWrapper",
+  "version": "1.0.0",
+  "description": "Wrapper for IndexedDB",
+  "authors": [
+    "Tsahar Sobe"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "devDependencies": {
+    "qunit": "~1.15.0",
+    "IndexedDBShim": "https://github.com/axemclion/IndexedDBShim.git",
+    "q": "1.0.1"
+  }
+}

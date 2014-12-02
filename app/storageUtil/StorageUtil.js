@@ -1,0 +1,580 @@
+/**
+ * StorageUtil is a util wrapper for IndexedDB API.
+ * @constructor
+ * @throws {StorageUtilException} If browser does not support IndexedDB.
+ */
+function StorageUtil(){
+
+    this._INDEXEDDBNOTSUPPORTED = "indexedDB is not supported by the browser";
+    this._DBALREADYEXISTS = "DB: {0} already exists";
+    this._DBCREATIONFAILED = "Creating DB: {0} failed";
+    this._TABLECREATIONFAILED = "Creating table: {0} failed";
+    this._TABLEEXISTS = "Table: {0} is already exists in {1}";
+    this._READWRITE = "readwrite";
+    this._DELETEDBFAILED = "Deleting DB has failed";
+    this._INSERTRECORDFAILED = "Insert record failed";
+    this._UPDATEFAILED = "Update records failed";
+    this._READRECORDFAILED = "Read Records failed";
+    this._READONLY = "readonly";
+    this._ISDBEXISTS = "Failed to check if DB: {0} exists";
+    this._RECORDNOTEXISTS = "Record: {0} not exists";
+    this._ISTABLEEXISTS = "Failed to check if table: {0} exists";
+
+    this._ErrorEnum = {indexedDBNotSupportedError : 1, dbAlreadyExistsError : 2, tableCreationFailed : 3, dbCreationFailed : 4, tableExistsError : 5, isDBExistsError : 8, updateFailed : 9, deleteRecordsFailed : 10, readRecordFailed : 11, deletingDBFailed : 12, recordNotExists : 13, insertRecordFailed : 14, isTableExistsFailed :15};
+    this._indexedDB = undefined;
+
+    if(this._isBrowserSupportsIndexedDB())
+        this._indexedDB = window.indexedDB;
+    else
+        throw new StorageUtilException(this._ErrorEnum.indexedDBNotSupportedError, this._INDEXEDDBNOTSUPPORTED);
+}
+
+
+StorageUtil.prototype._isBrowserSupportsIndexedDB = function(){
+
+    if(!window.indexedDB)
+    {
+        window.indexedDB = window.mozIndexedDB || window.webkitIndexedDB;
+        if(!window.indexedDB)
+        {
+            return false;
+        }
+    }
+    return true;
+};
+
+StorageUtil.prototype._closeDB = function(db){
+
+    //I have tried to use onversionchange event, but it does not supported in IE, so I am just closing the connection.
+    if(db)
+    {
+        db.close();
+    }
+};
+
+/**
+ * Creates a new DB inside IndexedDB.
+ * @param {string} dbName - The name of the DB.
+ * @returns {Promise} Return StorageUtilException if rejected.
+ */
+StorageUtil.prototype.createDB = function(dbName){
+
+    var deferred = Q.defer();
+    var that = this;
+    var db;
+    try
+    {
+        var exists = true;
+        var openRequest = that._indexedDB.open(dbName);
+        openRequest.onsuccess = function(e){
+            db = e.target.result;
+            that._closeDB(db);
+            if (exists)
+            {
+                deferred.reject(new StorageUtilException(that._ErrorEnum.dbAlreadyExistsError, that._format(that._DBALREADYEXISTS, dbName)));
+            }
+            else
+            {
+                deferred.resolve();
+            }
+
+        };
+        openRequest.onerror = function(e){
+            deferred.reject(new StorageUtilException(that._ErrorEnum.dbCreationFailed, that._format(that._DBCREATIONFAILED, dbName), e));
+        };
+        openRequest.onupgradeneeded = function(){
+            exists = false;
+        };
+    }
+    catch(e){
+        that._closeDB(db);
+        deferred.reject(new StorageUtilException(that._ErrorEnum.dbCreationFailed, that._format(that._DBCREATIONFAILED, dbName), e));
+    }
+
+    return deferred.promise;
+};
+
+/**
+ * Checks if a DB already exists in the IndexedDB.
+ * @param {string} dbName - The name of the DB.
+ * @returns {Promise}  A promise that returns true or false if resolved and returns StorageUtilException if rejected.
+ */
+StorageUtil.prototype.isDBExists = function(dbName){
+
+    var deferred = Q.defer();
+    var that = this;
+    var db;
+    try{
+        var openRequest = this._indexedDB.open(dbName);// The open is creating a db if it does not exists, so we need to delete the db at the end.
+        var exists = true;
+        openRequest.onsuccess = function(e){
+            openRequest.result.close();
+            db = e.target.result;
+
+            if (exists)
+            {
+                that._closeDB(db);
+                deferred.resolve(true);
+            }
+            else
+            {
+                that._indexedDB.deleteDatabase(dbName);// The open is creating a db if it does not exists, so we need to delete the db at the end.
+                that._closeDB(db);
+                deferred.resolve(false);
+            }
+
+        };
+        openRequest.onupgradeneeded = function() { //If the db does not exist it should enter the onupgradeneeded function
+            exists = false;
+        };
+        openRequest.onerror = function(e) {
+            deferred.reject(new StorageUtilException(that._ErrorEnum.isDBExistsError, that._format(that._ISDBEXISTS, dbName), e));
+        };
+    }
+    catch(e){
+        that._closeDB(db);
+        deferred.reject(new StorageUtilException(that._ErrorEnum.isDBExistsError, that._format(that._ISDBEXISTS, dbName), e));
+    }
+
+    return deferred.promise;
+};
+
+/**
+ * Creates a table inside a DB.
+ * @param {string} dbName - The name of the DB.
+ * @param {string} tableName - The name of the table.
+ * @returns {Promise}  A promise that is resolved once the table has been created, and rejected with StorageUtilException if the creation failed or the table already exists in the DB.
+ */
+StorageUtil.prototype.createTable = function(dbName, tableName){
+
+    var deferred = Q.defer();
+    var that = this;
+    var dbVersion;
+    var dbUpgrade;
+    try{
+        var openRequest = that._indexedDB.open(dbName);
+        openRequest.onsuccess = function(e) {
+            dbVersion = e.target.result;
+            var version = dbVersion.version;
+            version = version + 1;
+            that._closeDB(dbVersion);
+            var openRequest = that._indexedDB.open(dbName, version);
+            openRequest.onerror = function(e) {
+                deferred.reject(new StorageUtilException(that._ErrorEnum.tableCreationFailed, that._format(that._TABLECREATIONFAILED,tableName), e ));
+            };
+            openRequest.onupgradeneeded = function (e) {
+                dbUpgrade = e.target.result;
+                if (!dbUpgrade.objectStoreNames.contains(tableName))
+                {
+                    dbUpgrade.createObjectStore(tableName);
+                    that._closeDB(dbUpgrade);
+                    deferred.resolve();
+                }
+                else
+                {
+                    that._closeDB(dbUpgrade);
+                    deferred.reject(new StorageUtilException(that._ErrorEnum.tableExistsError), that._format(that._TABLEEXISTS, tableName, dbName), e );
+                }
+            };
+        };
+        openRequest.onerror = function(e){
+            deferred.reject(new StorageUtilException(that._ErrorEnum.tableCreationFailed, that._format(that._TABLECREATIONFAILED,tableName), e ));
+        };
+    }
+    catch(e){
+        that._closeDB(dbVersion);
+        that._closeDB(dbUpgrade);
+        deferred.reject(new StorageUtilException(that._ErrorEnum.tableCreationFailed, that._format(that._TABLECREATIONFAILED , tableName), e));
+    }
+
+    return deferred.promise;
+};
+
+/**
+ * Insert records into table.
+ * @param {string} dbName - The name of the DB.
+ * @param {string} tableName - The name of the table.
+ * @param {Array} dataArray - Array of objects. Each object has two properties, key and value.
+ * @returns {Promise}  A promise that is resolved once records have been inserted to table, and rejected with StorageUtilException if the insertion has failed.
+ */
+StorageUtil.prototype.insertRecords = function(dbName, tableName, dataArray){
+
+    var deferred = Q.defer();
+    var that = this;
+    var db;
+    try{
+        var transaction;
+        var store;
+        var count = 0;
+        var openRequest = this._indexedDB.open(dbName);
+        openRequest.onsuccess = function(e){
+            db = e.target.result;
+            transaction = db.transaction([tableName],that._READWRITE);
+            store = transaction.objectStore(tableName);
+            putNext();
+            function putNext() {
+                if(count < dataArray.length)
+                {
+                    store.put(dataArray[count].value, dataArray[count].key).onsuccess = putNext;
+                    count++;
+                }
+                else
+                {
+                    that._closeDB(db);
+                    deferred.resolve();
+                }
+            }
+        };
+
+        openRequest.onerror = function(e){
+            deferred.reject(new StorageUtilException(that._ErrorEnum.insertRecordFailed, that._format(that._INSERTRECORDFAILED , tableName), e));
+        };
+
+    }
+    catch(e){
+        that._closeDB(db);
+        deferred.reject(new StorageUtilException(that._ErrorEnum.insertRecordFailed, that._format(that._INSERTRECORDFAILED , tableName), e));
+    }
+
+    return deferred.promise;
+};
+
+
+/**
+ * Checks if table exists in the DB.
+ * @param {string} dbName - The name of the DB.
+ * @param {string} tableName - The name of the table.
+ * @returns {Promise}  A promise that is resolved with true or false is exists or not, and rejected with StorageUtilException once it fails.
+ */
+StorageUtil.prototype.isTableExists = function(dbName, tableName){
+
+    var deferred = Q.defer();
+    var that = this;
+    var db;
+    try
+    {
+        var transaction;
+        var store;
+        var openRequest = that._indexedDB.open(dbName);
+        openRequest.onsuccess = function(e) {
+            db = e.target.result;
+            try
+            {
+                transaction = db.transaction([tableName],that._READWRITE);
+            }
+            catch(e1)
+            {
+                that._closeDB(db);
+                deferred.resolve(false);
+                return;
+            }
+
+            store = transaction.objectStore(tableName);
+            that._closeDB(db);
+            if(store)
+                deferred.resolve(true);
+            else
+                deferred.resolve(false);
+
+        };
+        openRequest.onerror = function(){
+            deferred.reject(new StorageUtilException(that._ErrorEnum.isTableExistsFailed, that._format(that._ISTABLEEXISTS, tableName), e));
+        };
+
+    }
+    catch(e){
+        that._closeDB(db);
+        deferred.reject(new StorageUtilException(that._ErrorEnum.isTableExistsFailed, that._format(that._ISTABLEEXISTS, tableName), e));
+    }
+
+    return deferred.promise;
+};
+
+/**
+ * Update records in table.
+ * @param {string} dbName - The name of the DB.
+ * @param {string} tableName - The name of the table.
+ * @param {Array} dataArray - Array of objects. Each object has two properties, key and value.
+ * @returns {Promise}  A promise that is resolved with array of records that were not updated- this may happen if some of the records were not in the table, that array may be empty if all records were updated. The promise would be rejected with StorageUtilException if the insertion has failed.
+ */
+StorageUtil.prototype.updateRecords = function(dbName, tableName, dataArray){
+
+    var that = this;
+    var deferred = Q.defer();
+    var db;
+    try{
+        var transaction;
+        var store;
+        var count = -1;
+        var openRequest = this._indexedDB.open(dbName);
+        openRequest.onsuccess = function(e){
+            db = e.target.result;
+            transaction = db.transaction([tableName],that._READWRITE);
+            store = transaction.objectStore(tableName);
+            var recordsNotExists = [];
+            putNext();
+
+            function putNext() {
+                count++;
+                if(count < dataArray.length)
+                {
+                    var req = store.openCursor(dataArray[count].key);
+                    req.onsuccess = function(e){
+                        var cursor = e.target.result;
+
+                        if (cursor)
+                        { // key already exist
+                            store.put(dataArray[count].value, dataArray[count].key).onsuccess = putNext;
+                        }
+                        else
+                        { // key not exist
+                            recordsNotExists.push(dataArray[count].key);
+                            putNext();
+                        }
+                    };
+
+                    req.onerror = function(e){
+                        that._closeDB(db);
+                        deferred.reject(new StorageUtilException(that._ErrorEnum.recordNotExists, that._format(that._RECORDNOTEXISTS, dataArray[count].key ), e));
+                        return;
+                    };
+
+                }
+                else
+                {
+                    that._closeDB(db);
+                    deferred.resolve(recordsNotExists);
+                }
+            }
+        };
+        openRequest.onerror = function(e){
+            deferred.reject(new StorageUtilException(that._ErrorEnum.updateFailed, that._UPDATEFAILED, e));
+        };
+    }
+    catch(e){
+        that._closeDB(db);
+        deferred.reject(new StorageUtilException(that._ErrorEnum.updateFailed, that._UPDATEFAILED, e));
+    }
+
+    return deferred.promise;
+};
+
+/**
+ * Delete all records from table.
+ * @param {string} dbName - The name of the DB.
+ * @param {string} tableName - The name of the table.
+ * @returns {Promise}  A promise that is resolved once all records have been deleted. The promise would be rejected with StorageUtilException if the deletion has failed.
+ */
+StorageUtil.prototype.deleteAllRecords = function(dbName, tableName)
+{
+
+    var deferred = Q.defer();
+    var that = this;
+    var db;
+    try{
+        var transaction;
+        var store;
+        var openRequest = that._indexedDB.open(dbName);
+        openRequest.onsuccess = function(e){
+            db = e.target.result;
+            transaction = db.transaction([tableName],that._READWRITE);
+            store = transaction.objectStore(tableName);
+            var clearData = store.clear();
+            clearData.onsuccess = function(){
+                that._closeDB(db);
+                deferred.resolve();
+            };
+            clearData.onerror = function(e){
+                that._closeDB(db);
+                deferred.reject(new StorageUtilException(that._ErrorEnum.deleteRecordsFailed, that._DELETERECORDFAILED, e));
+            };
+        };
+
+        openRequest.onerror = function(e){
+            deferred.reject(new StorageUtilException(that._ErrorEnum.deleteRecordsFailed, that._DELETERECORDFAILED, e));
+        };
+    }
+    catch(e){
+        that._closeDB(db);
+        deferred.reject(new StorageUtilException(that._ErrorEnum.deleteRecordsFailed, that._DELETERECORDFAILED, e));
+    }
+
+    return deferred.promise;
+};
+
+/**
+ * Update records in table.
+ * @param {string} dbName - The name of the DB.
+ * @param {string} tableName - The name of the table.
+ * @param {Array} dataArray - Array of objects. Each object has two properties, key and value.
+ * @returns {Promise}  A promise that is resolved once the records have been deleted. The promise would be rejected with StorageUtilException if the deletion has failed.
+ */
+StorageUtil.prototype.deleteRecords = function(dbName, tableName, dataArray){
+
+    var that = this;
+    var deferred = Q.defer();
+    var db;
+    try{
+        var transaction;
+        var store;
+        var count = 0;
+        var openRequest = that._indexedDB.open(dbName);
+        openRequest.onsuccess = function(e){
+            db = e.target.result;
+            transaction = db.transaction([tableName],that._READWRITE);
+            store = transaction.objectStore(tableName);
+
+            deleteNext();
+
+            function deleteNext() {
+                if(count < dataArray.length)
+                {
+                    store.delete(dataArray[count]).onsuccess = deleteNext;
+                    count++;
+                }
+                else
+                {
+                    that._closeDB(db);
+                    deferred.resolve();
+                }
+            }
+        };
+
+        openRequest.onerror = function(){
+            deferred.reject(new StorageUtilException(that._ErrorEnum.deleteRecordsFailed, that._DELETERECORDFAILED, e));
+        };
+    }
+    catch(e){
+        that._closeDB(db);
+        deferred.reject(new StorageUtilException(that._ErrorEnum.deleteRecordsFailed, that._DELETERECORDFAILED, e));
+    }
+
+    return deferred.promise;
+};
+
+/**
+ * Read records from table.
+ * @param {string} dbName - The name of the DB.
+ * @param {string} tableName - The name of the table.
+ * @param  key - The key of the record.
+ * @returns {Promise}  A promise that is resolved with the value of the record, and rejected with StorageUtilException once it fails.
+ */
+StorageUtil.prototype.readRecord = function(dbName, tableName, key){
+
+    var deferred = Q.defer();
+    var that = this;
+    var db;
+    try
+    {
+        var transaction;
+        var store;
+        var openRequest = that._indexedDB.open(dbName);
+        openRequest.onsuccess = function(e) {
+            db = e.target.result;
+            transaction = db.transaction([tableName],that._READONLY);
+            store = transaction.objectStore(tableName);
+            var getElement = store.get(key);
+            getElement.onsuccess = function(e){
+                that._closeDB(db);
+                deferred.resolve(e.target.result);
+            };
+            getElement.onerror = function(e){
+                that._closeDB(db);
+                deferred.reject(new StorageUtilException(that._ErrorEnum.readRecordFailed, that._READRECORDFAILED, e));
+            };
+
+        };
+    }
+    catch(e){
+        that._closeDB(db);
+        deferred.reject(new StorageUtilException(that._ErrorEnum.readRecordFailed, that._READRECORDFAILED, e));
+    }
+
+    return deferred.promise;
+};
+
+/**
+ * Read all records from table.
+ * @param {string} dbName - The name of the DB.
+ * @param {string} tableName - The name of the table.
+ * @returns {Promise}  A promise that is resolved with object that contains the records for example: {0:{key:"", value: ""}, 1:{key: "", value: ""}}, and rejected with StorageUtilException once it fails.
+ */
+StorageUtil.prototype.readAllRecords = function(dbName, tableName){
+
+    var deferred = Q.defer();
+    var that = this;
+    var transaction;
+    var store;
+    var dataObject = {};
+    var row = 0;
+    var db;
+    try
+    {
+        var openRequest = that._indexedDB.open(dbName);
+        openRequest.onsuccess = function(e) {
+            db = e.target.result;
+            transaction = db.transaction([tableName],that._READONLY);
+            store = transaction.objectStore(tableName);
+            store.openCursor().onsuccess = function(event){
+                var cursor = event.target.result;
+                if(cursor)
+                {
+                    dataObject[row] = {key:cursor.key, value:cursor.value};
+                    cursor.continue();
+                    row++;
+                }
+                else
+                {
+                    that._closeDB(db);
+                    deferred.resolve(dataObject);
+                }
+            };
+        };
+        openRequest.onerror = function(e){
+            deferred.reject((new StorageUtilException(that._ErrorEnum.readRecordFailed, that._READRECORDFAILED, e)));
+        };
+
+    }
+    catch(e){
+        that._closeDB(db);
+        deferred.reject((new StorageUtilException(that._ErrorEnum.readRecordFailed, that._READRECORDFAILED, e)));
+    }
+
+    return deferred.promise;
+};
+
+/**
+ * Delete DB.
+ * @param {string} dbName - The name of the DB.
+ * @returns {Promise}  A promise that is resolved DB has been deleted, and rejected with StorageUtilException once it fails.
+ */
+StorageUtil.prototype.deleteDB = function(dbName){
+
+    var that = this;
+    var deferred = Q.defer();
+    try
+    {
+        var deletedDB = that._indexedDB.deleteDatabase(dbName);
+        deletedDB.onsuccess = function () {
+            deferred.resolve();
+        };
+        deletedDB.onerror = function (e) {
+            deferred.reject(new StorageUtilException(that._ErrorEnum.deletingDBFailed, that._DELETEDBFAILED, e));
+        };
+    }
+    catch(e){
+        deferred.reject(new StorageUtilException(that._ErrorEnum.deletingDBFailed, that._DELETEDBFAILED, e));
+    }
+    return deferred.promise;
+};
+
+StorageUtil.prototype._format= function (str, col) {
+
+    col = typeof col === 'object' ? col : Array.prototype.slice.call(arguments, 1);
+    return str.replace(/\{\{|\}\}|\{(\w+)\}/g, function (m, n) {
+        if (m === "{{") { return "{"; }
+        if (m === "}}") { return "}"; }
+        return col[n];
+    });
+};
+

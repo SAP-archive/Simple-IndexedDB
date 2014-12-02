@@ -1,0 +1,16 @@
+ method | error_code
+
+ * StorageUtil constructor  |  1 - IndexedDB not supported
+ * createDB | 2 - DB already exists
+ * createTable | 3 - creation failed
+ * createDB | 4 - Creating DB failed
+ * createTable | 5 - table already exists
+ * isDBExists | 8 -  error in function
+ * updateRecords | 9 - update failed
+ * deleteAllRecords | 10 - delete all records
+ * readRecord | 11 - read failed
+ * readAllRecords | 11 - read failed
+ * deleteDB | 12 - deletion failed
+ * updateRecords | 13 - record not exists
+ * insertRecords | 14 - insert failed
+ * isTableExists | 15 - error in function
