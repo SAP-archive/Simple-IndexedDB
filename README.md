@@ -226,25 +226,7 @@ __What else is in the project__:
 
     
 <dl class="details">
-    
 
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="StorageUtil.js.html">StorageUtil.js</a>, <a href="StorageUtil.js.html#line148">line 148</a>
@@ -291,13 +273,7 @@ __What else is in the project__:
     <div class="description">
         Delete all records from table.
     </div>
-    
 
-    
-
-    
-
-    
         <h5>Parameters:</h5>
         
 
@@ -309,10 +285,6 @@ __What else is in the project__:
         
 
         <th>Type</th>
-
-        
-
-        
 
         <th class="last">Description</th>
     </tr>
@@ -335,14 +307,8 @@ __What else is in the project__:
             
             </td>
 
-            
-
-            
-
             <td class="description last">The name of the DB.</td>
         </tr>
-
-    
 
         <tr>
             
@@ -353,14 +319,8 @@ __What else is in the project__:
             
                 
 <span class="param-type">string</span>
-
-
-            
+  
             </td>
-
-            
-
-            
 
             <td class="description last">The name of the table.</td>
         </tr>
@@ -372,50 +332,14 @@ __What else is in the project__:
 
     
 <dl class="details">
-    
 
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="StorageUtil.js.html">StorageUtil.js</a>, <a href="StorageUtil.js.html#line368">line 368</a>
     </li></ul></dd>
-    
-
-    
-
-    
-
-    
+  
 </dl>
 
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
     <h5>Returns:</h5>
     
             
@@ -455,11 +379,6 @@ __What else is in the project__:
     <div class="description">
         Delete DB.
     </div>
-    
-
-    
-
-    
 
     
         <h5>Parameters:</h5>
@@ -513,50 +432,15 @@ __What else is in the project__:
 
     
 <dl class="details">
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
+ 
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="StorageUtil.js.html">StorageUtil.js</a>, <a href="StorageUtil.js.html#line551">line 551</a>
     </li></ul></dd>
-    
 
-    
-
-    
-
-    
 </dl>
 
 
-    
-
-    
-
-    
-
-    
-
-    
-
-    
     <h5>Returns:</h5>
     
             
@@ -1030,23 +914,6 @@ __What else is in the project__:
 <dl class="details">
     
 
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="StorageUtil.js.html">StorageUtil.js</a>, <a href="StorageUtil.js.html#line102">line 102</a>
