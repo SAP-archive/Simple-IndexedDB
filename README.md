@@ -73,11 +73,8 @@ __What else is in the project__:
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="StorageUtil.js.html">StorageUtil.js</a>, <a href="StorageUtil.js.html#line6">line 6</a>
     </li></ul></dd>
- 
 </dl>
- 
     <h5>Throws:</h5>
- 
 <dl>
     <dt>
         <div class="param-desc">
@@ -107,18 +104,13 @@ __What else is in the project__:
             
 <dt>
     <h4 class="name" id="createDB"><span class="type-signature"></span>createDB<span class="signature">(dbName)</span><span class="type-signature"> &rarr; {Promise}</span></h4>
-
-    
 </dt>
 <dd>
-
-    
     <div class="description">
         Creates a new DB inside IndexedDB.
-    </div>
-
+    </div
         <h5>Parameters:</h5>
-        
+       
 <table class="params">
     <thead>
     <tr>
@@ -144,15 +136,8 @@ __What else is in the project__:
             
                 
 <span class="param-type">string</span>
-
-
-            
+         
             </td>
-
-            
-
-            
-
             <td class="description last">The name of the DB.</td>
         </tr>
 
@@ -163,58 +148,19 @@ __What else is in the project__:
 
     
 <dl class="details">
-    
 
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="StorageUtil.js.html">StorageUtil.js</a>, <a href="StorageUtil.js.html#line60">line 60</a>
     </li></ul></dd>
-    
 
-    
-
-    
-
-    
 </dl>
 
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
     <h5>Returns:</h5>
-    
-            
+  
 <div class="param-desc">
     Return StorageUtilException if rejected.
 </div>
-
-
 
 <dl>
     <dt>
@@ -228,96 +174,49 @@ __What else is in the project__:
     </dd>
 </dl>
 
-        
-
-    
 </dd>
-
-        
-            
 <dt>
     <h4 class="name" id="createTable"><span class="type-signature"></span>createTable<span class="signature">(dbName, tableName)</span><span class="type-signature"> &rarr; {Promise}</span></h4>
 
-    
 </dt>
 <dd>
-
-    
     <div class="description">
         Creates a table inside a DB.
     </div>
     
-
-    
-
-    
-
-    
         <h5>Parameters:</h5>
-        
-
+      
 <table class="params">
     <thead>
     <tr>
         
         <th>Name</th>
-        
-
         <th>Type</th>
-
-        
-
-        
 
         <th class="last">Description</th>
     </tr>
     </thead>
 
-    <tbody>
-    
-
+    <tbody
         <tr>
-            
                 <td class="name"><code>dbName</code></td>
-            
-
             <td class="type">
-            
-                
+          
 <span class="param-type">string</span>
-
-
-            
             </td>
-
-            
-
-            
 
             <td class="description last">The name of the DB.</td>
         </tr>
 
-    
-
         <tr>
             
                 <td class="name"><code>tableName</code></td>
-            
 
             <td class="type">
-            
-                
 <span class="param-type">string</span>
-
-
-            
+          
             </td>
-
-            
-
-            
-
-            <td class="description last">The name of the table.</td>
+<td class="description last">The name of the table.</td>
         </tr>
 
     
@@ -350,27 +249,9 @@ __What else is in the project__:
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="StorageUtil.js.html">StorageUtil.js</a>, <a href="StorageUtil.js.html#line148">line 148</a>
     </li></ul></dd>
-    
 
-    
-
-    
-
-    
 </dl>
 
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
     <h5>Returns:</h5>
     
             
@@ -1311,53 +1192,16 @@ __What else is in the project__:
 
     
 <dl class="details">
-    
 
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="StorageUtil.js.html">StorageUtil.js</a>, <a href="StorageUtil.js.html#line249">line 249</a>
     </li></ul></dd>
-    
 
-    
-
-    
-
-    
 </dl>
 
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
     <h5>Returns:</h5>
-    
-            
+  
 <div class="param-desc">
     A promise that is resolved with true or false is exists or not, and rejected with StorageUtilException once it fails.
 </div>
@@ -1471,54 +1315,16 @@ __What else is in the project__:
     
     </tbody>
 </table>
-    
-
-    
+ 
 <dl class="details">
-    
 
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="StorageUtil.js.html">StorageUtil.js</a>, <a href="StorageUtil.js.html#line502">line 502</a>
     </li></ul></dd>
-    
-
-    
-
-    
-
-    
+ 
 </dl>
 
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
     <h5>Returns:</h5>
     
             
@@ -1553,18 +1359,11 @@ __What else is in the project__:
     
 </dt>
 <dd>
-
     
     <div class="description">
         Read records from table.
     </div>
-    
 
-    
-
-    
-
-    
         <h5>Parameters:</h5>
         
 
@@ -1867,27 +1666,9 @@ __What else is in the project__:
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="StorageUtil.js.html">StorageUtil.js</a>, <a href="StorageUtil.js.html#line300">line 300</a>
     </li></ul></dd>
-    
 
-    
-
-    
-
-    
 </dl>
 
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
     <h5>Returns:</h5>
     
             
