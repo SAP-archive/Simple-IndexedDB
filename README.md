@@ -11,7 +11,7 @@ How to use:
 What else is in the project:
 
   doc: API documentation in HTML format.
-  report: Code coverage reports.
+  -- hit <Enter> report: Code coverage reports.
   tests: Tests.
 
   Clone the repository, install the bower.json and the package.json and run the Gruntfile.js.
