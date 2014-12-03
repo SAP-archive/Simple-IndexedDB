@@ -26,9 +26,9 @@ __What else is in the project__:
   Once running the Gruntfile the following tasks run:
   
   
-    uglify - for creating a min file
-    jshint - for static code check
-    jsdoc - Creating the API docs
+    uglify - Creating minified file
+    jshint - Static code check
+    jsdoc - Creating API docs
     qunit - Running qunit tests and code coverage
     karma - Running headless browser tests
     
