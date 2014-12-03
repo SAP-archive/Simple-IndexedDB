@@ -1,6 +1,8 @@
 Simple-IndexedDB
 ================
 
+![alt text](https://github.com/SAP/Simple-IndexedDB/blob/master/indexedDBImage.jpg)
+
 #####This API wraps the IndexedDB API and makes working with it much simpler.
 
 
