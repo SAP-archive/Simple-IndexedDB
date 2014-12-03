@@ -35,7 +35,4 @@ __What else is in the project__:
     jsdoc - Creating API docs
     qunit - Running qunit tests and code coverage
     karma - Running headless browser tests
-    
-    
-    [API](./doc/index.html)
- 
+  
