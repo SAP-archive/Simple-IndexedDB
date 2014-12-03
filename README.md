@@ -9,7 +9,7 @@ __How to use__:
   The main code of the Simple-IndexedDB is in app/storageUtil.
   
   
-  Just grab the StorageUtil.js and the StorageUtilException.js and you are ready to use the Simple-IndexedDB.
+  Grab the StorageUtil.js and the StorageUtilException.js and you are ready to use the Simple-IndexedDB.
   
   
   [API](http://htmlpreview.github.io/?https://github.com/SAP/Simple-IndexedDB/blob/master/doc/index.html)
