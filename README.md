@@ -3,14 +3,14 @@ Simple-IndexedDB
 
 #####This API wraps the IndexedDB API and makes working with it much simpler.
 
-__How to use__:
+_How to use_:
 
   The main code of the Simple-IndexedDB is in app/storageUtil.
   
   
   Just grab the StorageUtil.js and the StorageUtilException.js and you are ready to use the Simple-IndexedDB.
 
-__What else is in the project__:
+_What else is in the project_:
 
   doc: API documentation in HTML format.
   
