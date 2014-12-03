@@ -32,14 +32,12 @@ __What else is in the project__:
     qunit - Running qunit tests and code coverage
     karma - Running headless browser tests
     
-    __API__:
     
-    <!DOCTYPE html>
+  <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8">
     <title>JSDoc: Class: StorageUtil</title>
-
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
     <!--[if lt IE 9]>
@@ -48,99 +46,38 @@ __What else is in the project__:
     <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
     <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
 </head>
-
 <body>
-
 <div id="main">
-
     <h1 class="page-title">Class: StorageUtil</h1>
-
-    
-
-
-
 <section>
-
 <header>
     <h2>
     StorageUtil
     </h2>
-    
 </header>
 
 <article>
     <div class="container-overview">
-    
 
-    
-        
 <dt>
-    <h4 class="name" id="StorageUtil"><span class="type-signature"></span>new StorageUtil<span class="signature">()</span><span class="type-signature"></span></h4>
-
-    
+    <h4 class="name" id="StorageUtil"><span class="type-signature"></span>new StorageUtil<span class="signature">()</span><span class="type-signature"></span></h4>   
 </dt>
-<dd>
-
-    
+<dd>   
     <div class="description">
         StorageUtil is a util wrapper for IndexedDB API.
     </div>
     
-
-    
-
-    
-
-    
-
-    
 <dl class="details">
-    
 
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="StorageUtil.js.html">StorageUtil.js</a>, <a href="StorageUtil.js.html#line6">line 6</a>
     </li></ul></dd>
-    
-
-    
-
-    
-
-    
+ 
 </dl>
-
-
-    
-
-    
-
-    
-
-    
-
-    
+ 
     <h5>Throws:</h5>
-    
-            
-
+ 
 <dl>
     <dt>
         <div class="param-desc">
@@ -162,34 +99,10 @@ __What else is in the project__:
     </dt>
 </dl>
 
-
-        
-
-    
-
-    
 </dd>
-
-    
     </div>
 
-    
-
-    
-
-    
-
-    
-
-     
-
-    
-
-    
-
-    
         <h3 class="subsection-title">Methods</h3>
-
         <dl>
             
 <dt>
@@ -203,16 +116,9 @@ __What else is in the project__:
     <div class="description">
         Creates a new DB inside IndexedDB.
     </div>
-    
 
-    
-
-    
-
-    
         <h5>Parameters:</h5>
         
-
 <table class="params">
     <thead>
     <tr>
@@ -221,10 +127,6 @@ __What else is in the project__:
         
 
         <th>Type</th>
-
-        
-
-        
 
         <th class="last">Description</th>
     </tr>
@@ -2041,6 +1943,3 @@ __What else is in the project__:
 <script src="scripts/linenumber.js"> </script>
 </body>
 </html>
-    
-    
-
