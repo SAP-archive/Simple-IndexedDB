@@ -21,6 +21,8 @@ __What else is in the project__:
   tests: Tests.
 
   Clone the repository, install the bower.json and the package.json and run the Gruntfile.js.
+  
+  
   Once running the Gruntfile the following tasks run:
   
     uglify for creating a min file.
