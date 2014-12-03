@@ -10,7 +10,7 @@ __How to use__:
   
   Just grab the StorageUtil.js and the StorageUtilException.js and you are ready to use the Simple-IndexedDB.
 
-What else is in the project:
+__What else is in the project__:
 
   doc: API documentation in HTML format.
   
