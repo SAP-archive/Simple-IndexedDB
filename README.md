@@ -3,7 +3,7 @@ Simple-IndexedDB
 
 #####This API wraps the IndexedDB API and makes working with it much simpler.
 
-_How to use_:
+**How to use**:
 
   The main code of the Simple-IndexedDB is in app/storageUtil.
   
