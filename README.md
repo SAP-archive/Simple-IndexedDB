@@ -14,7 +14,7 @@ __How to use__:
   Grab the StorageUtil.js and the StorageUtilException.js and you are ready to use the Simple-IndexedDB.
   
   
-  * The API uses promise, please make sure to use the q open source library (https://github.com/kriskowal/q)
+  *The API uses promise, please make sure to use the q open source library (https://github.com/kriskowal/q)
   
   
   [API](http://htmlpreview.github.io/?https://github.com/SAP/Simple-IndexedDB/blob/master/doc/index.html)
