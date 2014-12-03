@@ -33,4 +33,5 @@ __What else is in the project__:
     karma - Running headless browser tests
     
     
+    [API](./doc/index.html)
  
